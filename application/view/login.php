@@ -8,7 +8,7 @@
 </head>
 <body>
     <h1>Login</h1>
-
+    <h3 style="color: red;"><?PHP echo isset($this->errMsg) ? $this->errMsg : ""; ?></h3>
     <form action="/user/login" method="post">
         <label for="id">ID</label>
         <input type="text" name="id" id="id">

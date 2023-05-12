@@ -3,10 +3,15 @@
 namespace application\controller;
 
 use application\util\UrlUtil;
+use \AllowDynamicProperties;
 
+
+#[AllowDynamicProperties]
 class Controller {
     protected $model;
     private static $modelList = [];
+    private static $arrNeedAuth = ["product/list"];
+
 
     // 생성자
     public function __construct($identityName, $action){
@@ -14,6 +19,9 @@ class Controller {
         if(!isset($_SESSION)) {
             session_start();
         }
+
+        // 유저 로그인 및 권한 체크
+        $this->chkAuthorization();
 
         // model 호출
         $this->model = $this->getModel($identityName);
@@ -49,6 +57,22 @@ class Controller {
         }
 
         return _PATH_VIEW.$view;
+    }
+
+    // 동적 속성(DynamicProperty)를 셋팅하는 메소드
+    public function addDynamicProperty($key, $val) {
+        $this->$key = $val; // $key가 넘어온 값.
+    }
+
+    // 유저 권한 체크 메소드
+    protected function chkAuthorization() {
+        $urlPath = UrlUtil::getUrl();
+        foreach( self::$arrNeedAuth as $authPath) {
+            if(!isset($_SESSION[_STR_LOGIN_ID]) && strpos($urlPath, $authPath) === 0) {
+                header(_BASE_REDIRECT."/user/login");
+                exit;
+            }
+        }
     }
 }
 
