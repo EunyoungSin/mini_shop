@@ -1,0 +1,14 @@
+* {
+    font-family: 'Roboto Slab', serif;
+}
+
+#top-link-block.affix-top {
+    position: absolute; /* allows it to "slide" up into view */
+    bottom: -82px;
+    left: 10px; /* right: 15px; 오른쪽에 위치시킬때 */
+}
+#top-link-block.affix {
+    position: fixed; /* keeps it on the bottom once in view */
+    bottom: 18px;
+    left: 10px;
+}
