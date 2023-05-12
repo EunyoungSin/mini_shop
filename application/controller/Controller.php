@@ -2,7 +2,9 @@
 
 namespace application\controller;
 
-class Controller{
+use application\util\UrlUtil;
+
+class Controller {
     protected $model;
     private static $modelList = [];
 
@@ -20,7 +22,7 @@ class Controller{
         $view = $this->$action();
 
         if(empty($view)) {
-                echo "해당 컨트롤러 파일이 없습니다. : ".$controllerPath;
+                echo "해당 컨트롤러 파일이 없습니다. : ".$action;
                 exit();
         }
 
@@ -32,7 +34,7 @@ class Controller{
     protected function getModel($identityName) {
         // model 생성 체크
         if(!in_array($identityName, self::$modelList)) {
-            $modelName = _PATH_MODEL.$identityName._BASE_FILENAME_MODEL;
+            $modelName = UrlUtil::replaceSlashToBackslash(_PATH_MODEL.$identityName._BASE_FILENAME_MODEL);
             self::$modelList[$identityName] = new $modelName(); // model class 호출
         }
         return self::$modelList[$identityName];
@@ -40,7 +42,13 @@ class Controller{
 
     // 파라미터를 확인해서 해당하는 view를 리턴하거나, redirect 
     public function getView($view) {
-        
+        // view를 체크
+        if(strpos($view, _BASE_REDIRECT) === 0) {
+            header($view);
+            exit();
+        }
+
+        return _PATH_VIEW.$view;
     }
 }
 

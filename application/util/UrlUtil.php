@@ -18,7 +18,11 @@ class UrlUtil {
         $url = UrlUtil::getUrl();
         return $url !== "" ? explode("/", $url) : "";
     }
-    
+
+    // "/"를 "\"로 치환해주는 메소드
+    public static function replaceSlashToBackslash($str) {
+        return str_replace("/", "\\", $str);
+    }
 }
 
 // 객체지향 프로그래밍시 최대한 기능을 쪼개야 단위테스트시 편함
