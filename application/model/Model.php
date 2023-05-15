@@ -29,3 +29,5 @@ class Model {
         $this->conn = null;
     }
 }
+
+// 비긴트랜젝션, 롤백, 커밋

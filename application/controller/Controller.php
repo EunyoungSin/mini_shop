@@ -10,10 +10,10 @@ use \AllowDynamicProperties;
 class Controller {
     protected $model;
     private static $modelList = [];
-    private static $arrNeedAuth = ["product/list"];
+    private static $arrNeedAuth = ["user/logout"];
 
 
-    // 생성자
+    // 생성자. $identityName = User, $action = loginGet
     public function __construct($identityName, $action){
         // session start
         if(!isset($_SESSION)) {
@@ -30,7 +30,7 @@ class Controller {
         $view = $this->$action();
 
         if(empty($view)) {
-                echo "해당 컨트롤러 파일이 없습니다. : ".$action;
+                echo "해당 Controller에 메소드가 없습니다. : ".$action;
                 exit();
         }
 
@@ -41,8 +41,11 @@ class Controller {
     // model 호출하고 결과를 리턴
     protected function getModel($identityName) {
         // model 생성 체크
+        // $this는 UserController라 Controller를 호출하는 self를 씀. 접근과 관련된 것을 스코프라고 함.
+        // $parent(부모)는 private이라 못 씀.
         if(!in_array($identityName, self::$modelList)) {
             $modelName = UrlUtil::replaceSlashToBackslash(_PATH_MODEL.$identityName._BASE_FILENAME_MODEL);
+            // application/model/User/
             self::$modelList[$identityName] = new $modelName(); // model class 호출
         }
         return self::$modelList[$identityName];

@@ -16,7 +16,7 @@ class UrlUtil {
 
         //$url = getUrl();
         $url = UrlUtil::getUrl();
-        return $url !== "" ? explode("/", $url) : "";
+        return $url !== "" ? explode("/", $url) : ""; // "/" 단위로 쪼개서 배열로 만들어줘
     }
 
     // "/"를 "\"로 치환해주는 메소드
