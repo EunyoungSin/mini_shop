@@ -24,9 +24,31 @@
     <form action="/user/signup" method="post">
         <div class="login-page">
             <div class="form">
+                <div class="error">
+                    <!-- 로그인 에러 메세지 출력-->
+                    <!-- if로 작성 -->
+                    <?php if(isset($this->errMsg)) { ?>
+                            <span><?php echo $this->errMsg ?></span>
+                    <?php } ?>
+                    <!-- 삼항 연산자로 작성 -->
+                </div>
                     <input type="text" name="id" id="id" placeholder="ID"/>
+                    <span id="errMsgId">
+                        <?php if(isset($this->arrError["id"])) { echo $this->arrError["id"]; } ?>
+                    </span>
+                    <button type="button" onclick="chkDuplicationId();">중복체크</button>
                     <input type="password" name="pw" id="pw" placeholder="PASSWORD"/>
-                    <input type="text" name="email" id="email" placeholder="E-MAIL"/>
+                    <span>
+                        <?php if(isset($this->arrError["pw"])) { echo $this->arrError["pw"]; } ?>
+                    </span>
+                    <input type="password" name="pwChk" id="pwChk" placeholder="PASSWORD CHECK"/>
+                    <span>
+                        <?php if(isset($this->arrError["pwChk"])) { echo $this->arrError["pwChk"]; } ?>
+                    </span>
+                    <input type="text" name="name" id="name" placeholder="NAME"/>
+                    <span>
+                        <?php if(isset($this->arrError["name"])) { echo $this->arrError["name"]; } ?>
+                    </span>
                     <button type="submit">create</button>
                     <p class="message">Already registered? <a href="#" onclick="redirectLogin();">Sign In</a></p>
             </div>

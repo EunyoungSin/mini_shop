@@ -25,9 +25,24 @@ class Model {
     }
 
     // DB Connect 파기
-    protected function closeConn() {
+    public function close() {
         $this->conn = null;
+    }
+
+    // Transation Start
+    public function beginTran() {
+        $this->conn->beginTransaction();
+    }
+
+    // commit
+    public function commit() {
+        $this->conn->commit();
+    }
+
+    // rollback
+    public function rollback() {
+        $this->conn->rollback();
     }
 }
 
-// 비긴트랜젝션, 롤백, 커밋
+// 비긴트랜젝션, 롤백, 커밋을 컨트롤러에서 시작해야 CRUD가 여러개라도 실행가능
