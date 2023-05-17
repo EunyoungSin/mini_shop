@@ -1,3 +1,7 @@
 * {
     font-family: 'Roboto Slab', serif;
 }
+
+a#account.text-white {
+    margin-right: 7px;
+}

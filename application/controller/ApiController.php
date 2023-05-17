@@ -12,16 +12,21 @@ class ApiController extends Controller {
         $result = $this->model->getUser($arrGet, false);
 
         // 유저 유무 체크
-        if(count($result) !== 0) {
+        if (count($result) !== 0) {
             $arrData["flg"] = "1";
             $arrData["msg"] = "ID already in use.";
-        } else {
+        }
+        else if(count($result) === 0) {
+            $arrData["flg"] = "2";
             $arrData["msg"] = "Available ID.";
         }
+        else {
+            $arrData["msg"] = "Please enter your User ID.";        }
 
         // 배열을 JSON으로 변경
         $json = json_encode($arrData);
-        http_response_code(400);
+        // http_response_code(400);
+        http_response_code(200);
         header('Content-type: application/json');
         echo $json;
         exit();

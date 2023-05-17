@@ -15,8 +15,22 @@ function redirectSignup() {
     location.href = "/user/signup"
 }
 
+function redirectAccount() {
+    location.href = "/user/account"
+}
+
+function redirectModify() {
+    location.href = "/user/modify"
+}
+
 function chkDuplicationId() {
     const id = document.getElementById('id');
+    const idspan = document.getElementById('errMsgId');
+
+    if (id.value === "") {
+    idspan.innerHTML = "Please enter your User ID.";
+    return;
+    }
 
     const url = "/api/user?id=" + id.value;
 
@@ -24,16 +38,23 @@ function chkDuplicationId() {
     fetch(url)
     .then(data => {
         // Response Status 확인 (200번 외에는 에러 처리)
-        if(data.status !== 200) {
+        // if(data.status !== 200) {
+        // throw new Error(data.status + ' : API Response Error');
+        // }
+        // return data.json();
+        // })
+        if (data.status === 200) {
+            return data.json();
+        } else {
             throw new Error(data.status + ' : API Response Error');
         }
-        return data.json();
     })
     .then(apiData => {
-        const idspan = document.getElementById('errMsgId');
-        if(apiData["flg"] === "1") {
+        if(apiData["flg"] === "0") {
             idspan.innerHTML = apiData["msg"];
-        } else {
+        } else if(apiData["flg"] === "1") {
+            idspan.innerHTML = apiData["msg"];
+        } else if(apiData["flg"] === "2") {
             idspan.innerHTML = apiData["msg"];
         }
     })

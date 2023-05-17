@@ -40,6 +40,7 @@
                         <?php } else { ?>
                         <!-- 로그아웃 -->
                         <a href="#" id="logout" class="text-white" style="float: right; font-size: large;" onclick="redirectLogout();">Logout</a>
+                        <a href="#" id="account" class="text-white" style="float: right; font-size: large;" onclick="redirectAccount();">My Account</a>
                         <?php } ?>
                         <br>
                     </div>

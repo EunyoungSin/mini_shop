@@ -39,7 +39,27 @@ class UserModel extends Model{
         
         $prepare = [
             ":u_id" => $arrUserInfo["id"]
-            , ":u_pw" => $arrUserInfo["pw"]
+            , ":u_pw" => base64_encode($arrUserInfo["pw"]) // 비밀번호 암호화. 양방향 암호화임.
+            , ":u_name" => $arrUserInfo["name"]
+        ];
+
+        try {
+            $stmt = $this->conn->prepare($sql);
+            $result = $stmt->execute($prepare);
+            return $result;
+        } catch (Exception $e) {
+            // echo "UserModel->insertUser Error : ".$e->getMessage();
+            // exit();
+            return false;
+        }
+    }
+
+    public function updateUser($arrUserInfo) {
+        $sql = " UPDATE user_info SET u_pw = :u_pw, u_name = :u_name WHERE u_id = :u_id ";
+        
+        $prepare = [
+            ":u_id" => $arrUserInfo["id"]
+            , ":u_pw" => base64_encode($arrUserInfo["pw"]) // 비밀번호 암호화. 양방향 암호화임.
             , ":u_name" => $arrUserInfo["name"]
         ];
 
