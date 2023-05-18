@@ -60,7 +60,7 @@
         </div>
     </header>
 
-    <!-- 카드 -->
+    <!-- 본문 카드 -->
     <div class="container">
         <div class="row row-xxl-4 row-cols-lg-3">
             <div class="col d-flex justify-content-center mt-3 mb-3">

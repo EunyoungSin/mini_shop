@@ -23,6 +23,11 @@ function redirectModify() {
     location.href = "/user/modify"
 }
 
+function redirectClose() {
+    location.href = "/user/close"
+}
+
+
 function chkDuplicationId() {
     const id = document.getElementById('id');
     const idspan = document.getElementById('errMsgId');

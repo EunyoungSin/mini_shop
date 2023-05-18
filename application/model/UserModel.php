@@ -5,7 +5,7 @@ namespace application\model;
 
 class UserModel extends Model{
     public function getUser($arrUserInfo, $pwFlg = true) {
-        $sql =" select * from user_info where u_id = :id ";
+        $sql =" select * from user_info where del_flg = '0' and u_id = :id ";
 
         // PW 추가할 경우
         if($pwFlg) {
@@ -39,7 +39,8 @@ class UserModel extends Model{
         
         $prepare = [
             ":u_id" => $arrUserInfo["id"]
-            , ":u_pw" => base64_encode($arrUserInfo["pw"]) // 비밀번호 암호화. 양방향 암호화임.
+            , ":u_pw" => $arrUserInfo["pw"]
+            // , ":u_pw" => base64_encode($arrUserInfo["pw"]) // 비밀번호 암호화. 양방향 암호화임.
             , ":u_name" => $arrUserInfo["name"]
         ];
 
@@ -54,15 +55,27 @@ class UserModel extends Model{
         }
     }
 
-    public function updateUser($arrUserInfo) {
-        $sql = " UPDATE user_info SET u_pw = :u_pw, u_name = :u_name WHERE u_id = :u_id ";
+    public function updateUser($arrUserInfo, $updateFlg = true) {
+        $sql = " UPDATE user_info SET ";
         
+        // 업데이트할 때
+        if($updateFlg){
+            $sql .= " u_pw = :u_pw, u_name = :u_name WHERE u_id = :u_id ";
+        // 삭제할 때 
+        }else{
+            $sql .= " del_flg = '1' WHERE u_id = :u_id ";
+        }
+
         $prepare = [
             ":u_id" => $arrUserInfo["id"]
-            , ":u_pw" => base64_encode($arrUserInfo["pw"]) // 비밀번호 암호화. 양방향 암호화임.
-            , ":u_name" => $arrUserInfo["name"]
         ];
 
+        if($updateFlg){
+            $prepare[":u_pw"] = $arrUserInfo["pw"];
+            // , ":u_pw" => base64_encode($arrUserInfo["pw"]) // 비밀번호 암호화. 양방향 암호화임.
+            $prepare[":u_name"] = $arrUserInfo["name"];
+        }
+        
         try {
             $stmt = $this->conn->prepare($sql);
             $result = $stmt->execute($prepare);

@@ -13,7 +13,7 @@ class UserController extends Controller {
         $result = $this->model->getUser($_POST); // model은 Controller.php에 protected로 정의되어있음.
         $this->model->close(); // DB 파기
 
-        $result[0]["u_pw"] === $_POST["u_pw"]; // 대소문자 구분. DB에서 패스워드 테이블에 BINARY 속성 줘서 만들어도 됨.
+        // $result[0]["u_pw"] === $_POST["u_pw"]; // 대소문자 구분. DB에서 패스워드 테이블에 BINARY 속성 줘서 만들어도 됨.
         // 유저 유무 체크
         if(count($result) === 0) {
             $errMsg = "We were unable to verify<br>your id or password.";
@@ -33,18 +33,21 @@ class UserController extends Controller {
         session_unset();
         session_destroy(); // 유저와 우리의 연결고리 끊기
         //로그인 페이지 리턴
-        return "login"._EXTENSION_PHP;
+        return "main"._EXTENSION_PHP;
     }
+
 
     // 회원가입 페이지 이동(get 방식)
     public function signupGet() {
         return "signup"._EXTENSION_PHP;
     }
 
+
     //회원가입 메소드(post 방식)
     public function signupPost() {
         $arrPost = $_POST;
         $arrChkErr = [];
+
         // 유효성체크 (글자 수 체크. mb:multibyte)
         // ID 글자 수 체크
         if(mb_strlen($arrPost["id"]) === 0 || mb_strlen($arrPost["id"]) > 12) {
@@ -52,7 +55,7 @@ class UserController extends Controller {
             $arrpost["id"] = "";
         }
         // ID 영문숫자 체크 (해보기)
-        $patten = "/[^a-zA-Z0-0]/"; // 문자열 체크하는 정규식. id, 비밀번호, 이메일 등등 사용.
+        $patten = "/[^a-zA-Z0-9]/"; // 문자열 체크하는 정규식. id, 비밀번호, 이메일 등등 사용. ID는 알파벳과 숫자만 사용가능.
         if(preg_match($patten, $arrPost["id"]) !== 0) {
             $arrChkErr["id"] = "Please enter your USER ID alphabet and numbers.";
             $arrpost["id"] = "";
@@ -63,6 +66,11 @@ class UserController extends Controller {
             $arrChkErr["pw"] = "Please enter a PASSWORD of 8-20 characters.";
         }
         // PW 영문숫자 특수문자 체크 (해보기)
+        $patten = "/[^a-zA-Z0-9!~@#$%^&*()?+=]/"; // 비밀번호 영문, 숫자, 특수문자로만 사용 가능.
+        if(preg_match($patten, $arrPost["pw"]) !== 0) {
+            $arrChkErr["pw"] = "Please enter PASSWORD alphabet, numbers, and marks.";
+            $arrpost["pw"] = "";
+        }
 
         // 비밀번호와 비밀번호 체크 확인
         if($arrPost["pw"] !== $arrPost["pwChk"]) {
@@ -121,6 +129,7 @@ class UserController extends Controller {
         return "account"._EXTENSION_PHP;
     }
 
+
     // 회원정보 수정 페이지로 이동
     public function modifyGet() {
         $data = array("id" => $_SESSION[_STR_LOGIN_ID]);
@@ -130,10 +139,18 @@ class UserController extends Controller {
         return "modify"._EXTENSION_PHP;
     }
 
+
     // 회원정보 수정 메소드
     public function modifyPost() {
         $arrPost = $_POST;
         $arrChkErr = [];
+
+        // 유효성 체크
+        // if(mb_strlen($arrPost["pw"]) === 0 && mb_strlen($arrPost["pwChk"]) === 0) {
+        //     $updateFlg = false;
+        // } else {
+        //     $updateFlg = true;
+        // }
 
         // PW 글자수 체크
         if(mb_strlen($arrPost["pw"]) < 8 || mb_strlen($arrPost["pw"]) > 20) {
@@ -154,8 +171,9 @@ class UserController extends Controller {
         // 유효성체크 에러일 경우
         if(!empty($arrChkErr)) {
             // 에러메세지 셋팅
-            $arrPost = $_POST;
-            $this->addDynamicProperty('arrError', $arrChkErr);
+            $this->addDynamicProperty("result", $arrPost);
+
+            $this->addDynamicProperty("arrError", $arrChkErr);
             return "modify"._EXTENSION_PHP;
         }
 
@@ -163,7 +181,7 @@ class UserController extends Controller {
 
         // Transaction start
         $this->model->beginTran();
-
+        // var_dump($arrPost);
         // user insert
         if(!$this->model->updateUser($arrPost)) {
             // 예외처리 롤백
@@ -171,11 +189,47 @@ class UserController extends Controller {
             echo "User Modify ERROR";
             exit();
         }
+
         $this->model->commit(); // 정상처리 커밋
         // **** Transaction End
 
-        // 로그인 페이지로 이동
+        // 계정정보 페이지로 이동
         return _BASE_REDIRECT."/user/account";
+        // return "account"._EXTENSION_PHP;
+    }
+
+    // 회원탈퇴 페이지로 이동
+    public function closeGet() {
+        $data = array("id" => $_SESSION[_STR_LOGIN_ID]);
+        $result = $this->model->getUser($data, false);
+        $this->addDynamicProperty("result", $result[0]);
+        return "close"._EXTENSION_PHP;
+    }
+
+
+    // 회원탈퇴 처리 메소드
+    public function closePost() {
+        $arrPost = $_POST;
+
+        // $result = $this->model->getUser($arrPost, false);
+
+        // Transaction start
+        $this->model->beginTran();
+        var_dump($arrPost);
+        // user insert
+        if(!$this->model->updateUser($arrPost, false)) {
+            // 예외처리 롤백
+            $this->model->rollback();
+            echo "User Close ERROR";
+            exit();
+        }
+        $this->model->commit(); // 정상처리 커밋
+        // **** Transaction End
+
+        session_unset();
+        session_destroy(); // 유저와 우리의 연결고리 끊기
+        //로그인 페이지 리턴
+        return "main"._EXTENSION_PHP;
     }
 }
 

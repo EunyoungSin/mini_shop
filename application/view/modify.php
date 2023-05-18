@@ -12,15 +12,9 @@
 </head>
 <body>
     <!-- 헤더 -->
-    <div class="navbar shadow-sm" style="background-color: rgb(189, 173, 226);">
-        <div class="container">
-            <a href="#" class="navbar-brand d-flex align-items-center" style="color: #51585e;" onclick="redirectMain();">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="30" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true" class="me-2" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-                <strong>#</strong>
-            </a>
-        </div>
-    </div>
-    <!-- 회원가입 폼 -->
+    <?php require_once("application/view/header.php"); ?>
+
+    <!-- 회원정보 수정 폼 -->
     <form action="/user/modify" method="post">
         <div class="login-page">
             <div class="form">
@@ -29,17 +23,25 @@
                     <br>
                     <label for="id">ID</label>
                     <input type="text" name="id" id="id" value="<?php echo $this->result["u_id"] ?>" readonly>
-                    <input type="hidden" name="id" value="<?php echo $this->result["u_id"] ?>">
                     <label for="pw">PASSWORD</label>
                     <input type="password" name="pw" id="pw" value="<?php echo $this->result["u_pw"] ?>">
-                    <span>
+                    <div>
                         <?php if(isset($this->arrError["pw"])) { echo $this->arrError["pw"]; } ?>
-                    </span>
+                    </div>
                     <label for="pwChk">CONFIRM PASSWORD</label>
                     <input type="password" name="pwChk" id="pwChk" value="<?php echo $this->result["u_pw"] ?>">
+                    <div>
+                        <?php if(isset($this->arrError["pwChk"])) { echo $this->arrError["pwChk"]; } ?>
+                    </div>
                     <label for="name">NAME</label>
                     <input type="text" name="name" id="name" value="<?php echo $this->result["u_name"] ?>">
+                    <div>
+                        <?php if(isset($this->arrError["name"])) { echo $this->arrError["name"]; } ?>
+                    </div>
                 </div>
+                <input type="hidden" name="u_id" value="<?php echo $this->result["u_id"] ?>">
+                <input type="hidden" name="u_pw" value="<?php echo $this->result["u_pw"] ?>">
+                <input type="hidden" name="u_name" value="<?php echo $this->result["u_name"] ?>">
                 <button type="submit">complete</button>
             </div>
         </div>
