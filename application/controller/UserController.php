@@ -55,7 +55,7 @@ class UserController extends Controller {
             $arrpost["id"] = "";
         }
         // ID 영문숫자 체크 (해보기)
-        $patten = "/[^a-zA-Z0-9]/"; // 문자열 체크하는 정규식. id, 비밀번호, 이메일 등등 사용. ID는 알파벳과 숫자만 사용가능.
+        $patten = "/[^a-zA-Z0-9]/u"; // 문자열 체크하는 정규식. id, 비밀번호, 이메일 등등 사용. ID는 알파벳과 숫자만 사용가능.
         if(preg_match($patten, $arrPost["id"]) !== 0) {
             $arrChkErr["id"] = "Please enter your USER ID<br>alphabet and numbers.";
             $arrpost["id"] = "";
@@ -66,7 +66,7 @@ class UserController extends Controller {
             $arrChkErr["pw"] = "Please enter a PASSWORD<br>of 8-20 characters.";
         }
         // PW 영문숫자 특수문자 체크 (해보기)
-        $patten = "/[^a-zA-Z0-9!~@#$%^&*()?+-=]/"; // 비밀번호 영문, 숫자, 특수문자로만 사용 가능.
+        $patten = "/[^a-zA-Z0-9!~@#$%^&*()?+-=]/u"; // 비밀번호 영문, 숫자, 특수문자로만 사용 가능.
         if(preg_match($patten, $arrPost["pw"]) !== 0) {
             $arrChkErr["pw"] = "Please enter PASSWORD<br>with letters, numbers, and marks.";
             $arrpost["pw"] = "";
