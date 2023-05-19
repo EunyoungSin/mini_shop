@@ -9,19 +9,24 @@ class ApiController extends Controller {
         // model 호출
         $this->model = $this->getModel("User");
         
-        $result = $this->model->getUser($arrGet, false);
+        $result = $this->model->getUser($arrGet, false, false);
 
         // 유저 유무 체크
         if (count($result) !== 0) {
             $arrData["flg"] = "1";
             $arrData["msg"] = "ID already in use.";
         }
+        // else if(count($delFlgResult) !== 0) {
+        //     $arrData["flg"] = "1";
+        //     $arrData["msg"] = "ID already in use.";
+        // }
         else if(count($result) === 0) {
             $arrData["flg"] = "2";
             $arrData["msg"] = "Available ID.";
         }
         else {
-            $arrData["msg"] = "Please enter your User ID.";        }
+            $arrData["msg"] = "Please enter your User ID.";
+        }
 
         // 배열을 JSON으로 변경
         $json = json_encode($arrData);

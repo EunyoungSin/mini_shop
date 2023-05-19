@@ -4,12 +4,17 @@ namespace application\model;
 // 동적쿼리 : 여러 화면에서 해당 쿼리를 사용하겠다. 여러 화면에서 동작가능하도록 설계.
 
 class UserModel extends Model{
-    public function getUser($arrUserInfo, $pwFlg = true) {
-        $sql =" select * from user_info where del_flg = '0' and u_id = :id ";
+    public function getUser($arrUserInfo, $pwFlg = true, $delFlg = true) {
+        $sql =" select * from user_info where u_id = :id ";
 
         // PW 추가할 경우
         if($pwFlg) {
-            $sql .= " and u_pw = :pw ";
+            $sql .= " and u_pw = BINARY :pw ";
+        }
+
+        // 삭제한 아이디 추가할 경우
+        if($delFlg) {
+            $sql .= " and del_flg = '0' ";
         }
 
         $prepare = [

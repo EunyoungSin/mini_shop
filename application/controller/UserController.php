@@ -10,10 +10,10 @@ class UserController extends Controller {
 
     // 로그인 메소드(post 방식)
     public function loginPost() {
-        $result = $this->model->getUser($_POST); // model은 Controller.php에 protected로 정의되어있음.
+        $result = $this->model->getUser($_POST, false, true); // model은 Controller.php에 protected로 정의되어있음.
         $this->model->close(); // DB 파기
 
-        // $result[0]["u_pw"] === $_POST["u_pw"]; // 대소문자 구분. DB에서 패스워드 테이블에 BINARY 속성 줘서 만들어도 됨.
+        // $result[0]["u_pw"] === $_POST["u_pw"]; // 대소문자 구분. DB에서 패스워드 테이블에 BINARY 속성 줘서 만들어도 됨. DB에 BINARY 속성 줌.
         // 유저 유무 체크
         if(count($result) === 0) {
             $errMsg = "We were unable to verify<br>your id or password.";
@@ -51,24 +51,24 @@ class UserController extends Controller {
         // 유효성체크 (글자 수 체크. mb:multibyte)
         // ID 글자 수 체크
         if(mb_strlen($arrPost["id"]) === 0 || mb_strlen($arrPost["id"]) > 12) {
-            $arrChkErr["id"] = "Please enter your USER ID between 1-12 characters.";
+            $arrChkErr["id"] = "Please enter your USER ID<br>between 1-12 characters.";
             $arrpost["id"] = "";
         }
         // ID 영문숫자 체크 (해보기)
         $patten = "/[^a-zA-Z0-9]/"; // 문자열 체크하는 정규식. id, 비밀번호, 이메일 등등 사용. ID는 알파벳과 숫자만 사용가능.
         if(preg_match($patten, $arrPost["id"]) !== 0) {
-            $arrChkErr["id"] = "Please enter your USER ID alphabet and numbers.";
+            $arrChkErr["id"] = "Please enter your USER ID<br>alphabet and numbers.";
             $arrpost["id"] = "";
         }
 
         // PW 글자수 체크
         if(mb_strlen($arrPost["pw"]) < 8 || mb_strlen($arrPost["pw"]) > 20) {
-            $arrChkErr["pw"] = "Please enter a PASSWORD of 8-20 characters.";
+            $arrChkErr["pw"] = "Please enter a PASSWORD<br>of 8-20 characters.";
         }
         // PW 영문숫자 특수문자 체크 (해보기)
-        $patten = "/[^a-zA-Z0-9!~@#$%^&*()?+=]/"; // 비밀번호 영문, 숫자, 특수문자로만 사용 가능.
+        $patten = "/[^a-zA-Z0-9!~@#$%^&*()?+-=]/"; // 비밀번호 영문, 숫자, 특수문자로만 사용 가능.
         if(preg_match($patten, $arrPost["pw"]) !== 0) {
-            $arrChkErr["pw"] = "Please enter PASSWORD alphabet, numbers, and marks.";
+            $arrChkErr["pw"] = "Please enter PASSWORD<br>with letters, numbers, and marks.";
             $arrpost["pw"] = "";
         }
 
@@ -79,7 +79,7 @@ class UserController extends Controller {
 
         // NAME 글자수 체크
         if(mb_strlen($arrPost["name"]) === 0 || mb_strlen($arrPost["name"]) > 30) {
-            $arrChkErr["name"] = "Please enter your NAME between 1-30 characters.";
+            $arrChkErr["name"] = "Please enter your NAME<br>between 1-30 characters.";
         }
 
         // pw는 화면에 공란으로 표시하기위해 빈문자열로 재설정
@@ -154,9 +154,14 @@ class UserController extends Controller {
 
         // PW 글자수 체크
         if(mb_strlen($arrPost["pw"]) < 8 || mb_strlen($arrPost["pw"]) > 20) {
-            $arrChkErr["pw"] = "Please enter a PASSWORD of 8-20 characters.";
+            $arrChkErr["pw"] = "Please enter a PASSWORD<br>of 8-20 characters.";
         }
         // PW 영문숫자 특수문자 체크 (해보기)
+        $patten = "/[^a-zA-Z0-9!~@#$%^&*()?+-=]/"; // 비밀번호 영문, 숫자, 특수문자로만 사용 가능.
+        if(preg_match($patten, $arrPost["pw"]) !== 0) {
+            $arrChkErr["pw"] = "Please enter PASSWORD<br>with letters, numbers, and marks.";
+            $arrpost["pw"] = "";
+        }
 
         // 비밀번호와 비밀번호 체크 확인
         if($arrPost["pw"] !== $arrPost["pwChk"]) {
@@ -165,7 +170,7 @@ class UserController extends Controller {
 
         // NAME 글자수 체크
         if(mb_strlen($arrPost["name"]) === 0 || mb_strlen($arrPost["name"]) > 30) {
-            $arrChkErr["name"] = "Please enter your NAME between 1-30 characters.";
+            $arrChkErr["name"] = "Please enter your NAME<br>between 1-30 characters.";
         }
 
         // 유효성체크 에러일 경우
@@ -198,6 +203,7 @@ class UserController extends Controller {
         // return "account"._EXTENSION_PHP;
     }
 
+
     // 회원탈퇴 페이지로 이동
     public function closeGet() {
         $data = array("id" => $_SESSION[_STR_LOGIN_ID]);
@@ -215,7 +221,7 @@ class UserController extends Controller {
 
         // Transaction start
         $this->model->beginTran();
-        var_dump($arrPost);
+        // var_dump($arrPost);
         // user insert
         if(!$this->model->updateUser($arrPost, false)) {
             // 예외처리 롤백

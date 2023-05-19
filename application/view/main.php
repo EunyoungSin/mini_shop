@@ -29,7 +29,7 @@
                     <div class="col-sm-4 offset-md-1 py-4">
                         <h4 class="text-white">Contact</h4>
                             <ul class="list-unstyled">
-                                <li><a href="#" class="text-white">Email me</a></li>
+                                <li><a href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=eunyoung5742@naver.com" class="text-white">Email me</a></li>
                             </ul>
                     </div>
                     <div>
